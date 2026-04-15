@@ -1,0 +1,39 @@
+.image-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.image-divider img {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    transition: transform 0.3s;
+}
+
+.image-divider img:hover {
+    transform: scale(1.05);
+}
+
+.image-divider .divider-line {
+    width: 100%;
+    height: 2px;
+    background-color: #ccc;
+    position: relative;
+}
+
+.image-divider .divider-line:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    z-index: 1;
+}
