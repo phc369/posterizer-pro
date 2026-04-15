@@ -1,32 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Posterizer Pro</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .container { max-width: 600px; margin: auto; padding: 20px; }
-        h1 { color: #333; }
-    </style>
+    <title>Posterizer Pro - Divisor de Imágenes</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Posterizer Pro</h1>
-        <p>Your application for creating stunning posters.</p>
-        <button id="generateBtn">Generate Poster</button>
-        <canvas id="posterCanvas" width="500" height="500" style="border:1px solid #000;"></canvas>
+        <header>
+            <h1>📄 Posterizer Pro</h1>
+            <p>Divide tus imágenes en múltiples hojas para imprimir</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Sección de carga -->
+            <section class="upload-section">
+                <h2>1. Carga tu imagen</h2>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="imageInput" accept="image/*" hidden>
+                    <div class="upload-placeholder">
+                        <p>Arrastra tu imagen aquí o haz clic para seleccionar</p>
+                        <small>Formatos soportados: JPG, PNG, GIF, WebP</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección de configuración -->
+            <section class="config-section" id="configSection" style="display: none;">
+                <h2>2. Configura la división</h2>
+                
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <label for="paperSize">Tamaño de papel:</label>
+                        <select id="paperSize">
+                            <option value="letter">Carta (8.5" × 11")</option>
+                            <option value="a4">A4 (210 × 297 mm)</option>
+                            <option value="legal">Oficio (8.5" × 14")</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label for="orientation">Orientación:</label>
+                        <select id="orientation">
+                            <option value="portrait">Vertical</option>
+                            <option value="landscape">Horizontal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sliders-container">
+                    <div class="slider-item">
+                        <label for="rowsSlider">Filas: <span id="rowsValue">2</span></label>
+                        <input type="range" id="rowsSlider" min="1" max="10" value="2" class="slider">
+                    </div>
+
+                    <div class="slider-item">
+                        <label for="columnsSlider">Columnas: <span id="columnsValue">2</span></label>
+                        <input type="range" id="columnsSlider" min="1" max="10" value="2" class="slider">
+                    </div>
+
+                    <div class="slider-item">
+                        <label for="qualitySlider">Calidad: <span id="qualityValue">1x</span></label>
+                        <input type="range" id="qualitySlider" min="1" max="4" value="1" step="0.5" class="slider">
+                    </div>
+
+                    <div class="slider-item">
+                        <label for="overlapSlider">Superposición: <span id="overlapValue">0</span>%</label>
+                        <input type="range" id="overlapSlider" min="0" max="20" value="0" step="5" class="slider">
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p>Grid: <strong id="gridInfo">2 × 2</strong> | Calidad: <strong id="qualityInfo">1x</strong></p>
+                </div>
+            </section>
+
+            <!-- Sección de vista previa -->
+            <section class="preview-section" id="previewSection" style="display: none;">
+                <h2>3. Vista previa</h2>
+                <div class="preview-container">
+                    <canvas id="previewCanvas"></canvas>
+                </div>
+                <button id="regenerateBtn" class="btn btn-secondary">Regenerar vista previa</button>
+            </section>
+
+            <!-- Sección de opciones Google Drive -->
+            <section class="drive-section" id="driveSection" style="display: none;">
+                <h2>Guardar en Google Drive</h2>
+                <button id="authGoogleBtn" class="btn btn-drive">Autorizar Google Drive</button>
+                <p id="driveStatus" style="display: none;">Estado: <span id="driveStatusText"></span></p>
+            </section>
+
+            <!-- Sección de descarga -->
+            <section class="download-section" id="downloadSection" style="display: none;">
+                <h2>4. Descarga tus archivos</h2>
+                <div class="button-group">
+                    <button id="downloadBtn" class="btn btn-primary">📥 Descargar como ZIP</button>
+                    <button id="downloadPdfBtn" class="btn btn-primary">📑 Descargar como PDF</button>
+                    <button id="uploadToDriveBtn" class="btn btn-primary" style="display: none;">☁️ Guardar en Drive</button>
+                </div>
+                <div id="progressContainer" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Preparando archivos...</p>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>Posterizer Pro © 2026 | Diseño responsivo para impresión</p>
+        </footer>
     </div>
-    <script>
-        document.getElementById('generateBtn').addEventListener('click', function() {
-            const canvas = document.getElementById('posterCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#FF5733';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#FFFFFF';
-            ctx.font = '30px Arial';
-            ctx.fillText('Your Poster!', 50, 50);
-        });
-    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
