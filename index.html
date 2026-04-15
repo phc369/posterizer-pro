@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posterizer Pro</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Posterizer Pro</h1>
+        <p>Your application for creating stunning posters.</p>
+        <button id="generateBtn">Generate Poster</button>
+        <canvas id="posterCanvas" width="500" height="500" style="border:1px solid #000;"></canvas>
+    </div>
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const canvas = document.getElementById('posterCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FF5733';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '30px Arial';
+            ctx.fillText('Your Poster!', 50, 50);
+        });
+    </script>
+</body>
+</html>
